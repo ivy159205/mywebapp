@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         PROJECT_NAME = 'MyWebApp'
-        DOCKER_IMAGE = 'MyWebApp:latest'
+        DOCKER_IMAGE = 'mywebapp:latest'
         CONTAINER_NAME = 'MyWebApp-container'
         PORT = '82'
     }
