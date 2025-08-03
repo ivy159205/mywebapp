@@ -30,7 +30,7 @@ pipeline {
 
         stage('Publish') {
             steps {
-                sh 'dotnet publish MyWebApp/MyWebApp.csproj -c Release -o out'
+                sh 'dotnet publish MyWebApp.csproj -c Release -o out'
             }
         }
 
