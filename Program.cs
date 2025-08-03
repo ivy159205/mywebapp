@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyWebApp.Data;
+// Prometheus
+using Prometheus;
 
 namespace MyWebApp
 {
@@ -32,6 +34,12 @@ namespace MyWebApp
             app.UseStaticFiles();
 
             app.UseRouting();
+            // Prometheus
+            app.UseHttpMetrics();
+            app.UseEndpoints(endpoints => {
+                endpoints.MapMetrics();
+                endpoints.MapControllers();
+            });
 
             app.UseAuthorization();
 
