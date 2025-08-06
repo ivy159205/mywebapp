@@ -35,7 +35,7 @@ pipeline {
                 set PATH=%PATH%;%USERPROFILE%\\.dotnet\\tools
                 dotnet sonarscanner begin ^
                   /k:"MyWebApp" ^
-                  /d:sonar.host.url="http://localhost:9090" ^
+                  /d:sonar.host.url="http://localhost:9080" ^
                   /d:sonar.login=%SONAR_AUTH_TOKEN%
             """
         }
