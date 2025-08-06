@@ -6,10 +6,6 @@ pipeline {
         DOCKER_IMAGE = 'mywebapp:latest'
         CONTAINER_NAME = 'MyWebApp-container'
         PORT = '82'
-
-        // Thông tin Docker Hub
-        DOCKERHUB_USERNAME = credentials('vanesline') // Jenkins credential ID
-        DOCKERHUB_TOKEN = credentials('dckr_pat_OfOBTRXluUCmGfJSA1efWzQGcvQ')       // Jenkins credential ID
     }
 
     stages {
@@ -41,21 +37,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t $DOCKER_IMAGE .'
-            }
-        }
-
-        stage('Push to Docker Hub') {
-            steps {
-                script {
-                    def fullImageName = "${DOCKERHUB_USERNAME}/mywebapp:latest"
-
-                    sh """
-                        echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-                        docker tag $DOCKER_IMAGE $fullImageName
-                        docker push $fullImageName
-                        docker logout
-                    """
-                }
             }
         }
 
