@@ -72,7 +72,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('MySonar') {
-                    bat "\"${env.SONAR_SCANNER}\" -Dsonar.projectKey=MyWebApp -Dsonar.sources=."
+                    bat "\"${env.SONAR_SCANNER}\" -Dsonar.projectKey=mywebapp -Dsonar.sources=."
                 }
             }
         }
