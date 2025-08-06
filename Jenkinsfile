@@ -12,42 +12,59 @@ pipeline {
     }
 
     stages {
+        stage('Cleanup') {
+            steps {
+                cleanWs()
+            }
+        }
+
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/ivy159205/mywebapp.git'
             }
         }
 
-        stage('Restore & Build') {
+        stage('Restore') {
             steps {
-                sh 'dotnet restore'
-                sh 'dotnet build -c Release'
+                bat 'dotnet restore MyWebApp.csproj'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                bat 'dotnet build MyWebApp.csproj -c Release --no-restore'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'dotnet test || true'  // Cho phép job tiếp tục nếu test fail (tuỳ chọn)
+                bat 'dotnet test || exit 0'
             }
         }
 
         stage('Publish') {
             steps {
-                sh 'dotnet publish MyWebApp.csproj -c Release -o out'
+                bat 'dotnet publish MyWebApp.csproj -c Release -o out --no-restore'
+                bat '''
+                    if not exist out\\MyWebApp.runtimeconfig.json (
+                        echo ❌ runtimeconfig.json not found!
+                        exit /b 1
+                    )
+                '''
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
+                bat 'docker build -t %DOCKER_IMAGE% .'
             }
         }
 
         stage('Deploy Docker Container') {
             steps {
-                sh '''
-                    docker rm -f $CONTAINER_NAME || true
-                    docker run -d -p $PORT:80 --name $CONTAINER_NAME $DOCKER_IMAGE
+                bat '''
+                    docker rm -f %CONTAINER_NAME% || exit 0
+                    docker run -d -p %PORT%:80 --name %CONTAINER_NAME% %DOCKER_IMAGE%
                 '''
             }
         }
@@ -66,7 +83,7 @@ pipeline {
                     waitForQualityGate abortPipeline: true
                 }
             }
-        } 
+        }
     }
 
     post {
