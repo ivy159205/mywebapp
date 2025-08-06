@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        sonarQubeScanner 'SonarScanner'
+    }
+
     environment {
         PROJECT_NAME = 'MyWebApp'
         DOCKER_IMAGE = 'mywebapp:latest'
@@ -54,7 +58,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    bat "${tool SONAR_SCANNER}\\bin\\sonar-scanner.bat -Dsonar.projectKey=MyWebApp -Dsonar.sources=. -Dsonar.cs.opencover.reportsPaths=coverage.opencover.xml"
+                    sh 'sonar-scanner -Dsonar.projectKey=MyWebApp -Dsonar.sources=.'
                 }
             }
         }
