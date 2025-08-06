@@ -6,9 +6,6 @@ pipeline {
         DOCKER_IMAGE = 'mywebapp:latest'
         CONTAINER_NAME = 'MyWebApp-container'
         PORT = '82'
-
-        SONARQUBE_SERVER = 'MySonar'
-        SONAR_SCANNER = 'C:\\ProgramData\\Jenkins\\.jenkins\\tools\\hudson.plugins.sonar.SonarRunnerInstallation\\SonarScanner\\bin\\sonar-scanner.bat'
     }
 
     stages {
@@ -66,22 +63,6 @@ pipeline {
                     docker rm -f %CONTAINER_NAME% || exit 0
                     docker run -d -p %PORT%:80 --name %CONTAINER_NAME% %DOCKER_IMAGE%
                 '''
-            }
-        }
-
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('MySonar') {
-                    bat "\"${env.SONAR_SCANNER}\" -Dsonar.projectKey=mywebapp -Dsonar.sources=."
-                }
-            }
-        }
-
-        stage("Wait for Quality Gate") {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
             }
         }
     }

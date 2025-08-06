@@ -14,27 +14,18 @@ spec:
     spec:
       containers:
         - name: sonarqube
-          image: sonarqube:latest
+          image: sonarqube:10.5.1-community
           ports:
             - containerPort: 9000
-          resources:
-            limits:
-              memory: "2Gi"
-              cpu: "1"
-          env:
-            - name: SONAR_ES_BOOTSTRAP_CHECKS_DISABLE
-              value: "true"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: sonarqube-service
-spec:
-  type: NodePort
-  selector:
-    app: sonarqube
-  ports:
-    - protocol: TCP
-      port: 9000
-      targetPort: 9000
-      nodePort: 32000  # Port trên Minikube để truy cập từ máy ngoài
+          volumeMounts:
+            - name: sonarqube-data
+              mountPath: /opt/sonarqube/data
+            - name: sonarqube-extensions
+              mountPath: /opt/sonarqube/extensions
+      volumes:
+        - name: sonarqube-data
+          persistentVolumeClaim:
+            claimName: sonarqube-data-pvc
+        - name: sonarqube-extensions
+          persistentVolumeClaim:
+            claimName: sonarqube-extensions-pvc
