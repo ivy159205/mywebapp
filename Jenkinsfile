@@ -28,18 +28,19 @@ pipeline {
         }
 
         stage('SonarQube Analysis Begin') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    bat """
-                        dotnet tool install --global dotnet-sonarscanner
-                        set PATH=%PATH%;%USERPROFILE%\\.dotnet\\tools
-                        dotnet sonarscanner begin ^
-                          /k:"MyWebApp" ^
-                          /d:sonar.login=%sqtoken%
-                    """
-                }
-            }
+    steps {
+        withSonarQubeEnv(credentialsId: 'sqtoken', installationName: 'SonarQube') {
+            bat """
+                dotnet tool install --global dotnet-sonarscanner
+                set PATH=%PATH%;%USERPROFILE%\\.dotnet\\tools
+                dotnet sonarscanner begin ^
+                  /k:"MyWebApp" ^
+                  /d:sonar.host.url="http://localhost:9090" ^
+                  /d:sonar.login=%SONAR_AUTH_TOKEN%
+            """
         }
+    }
+}
 
         stage('Build') {
             steps {
@@ -66,15 +67,16 @@ pipeline {
         }
 
         stage('SonarQube Analysis End') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    bat """
-                        set PATH=%PATH%;%USERPROFILE%\\.dotnet\\tools
-                        dotnet sonarscanner end /d:sonar.login=%sqtoken%
-                    """
-                }
-            }
+    steps {
+        withSonarQubeEnv(credentialsId: 'sqtoken', installationName: 'SonarQube') {
+            bat """
+                set PATH=%PATH%;%USERPROFILE%\\.dotnet\\tools
+                dotnet sonarscanner end /d:sonar.login=%SONAR_AUTH_TOKEN%
+            """
         }
+    }
+}
+
 
         stage('Build Docker Image') {
             steps {
