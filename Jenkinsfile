@@ -8,7 +8,6 @@ pipeline {
         PORT = '82'
 
         SONARQUBE_SERVER = 'MySonar'
-        SONAR_SCANNER = 'SonarScanner'
     }
 
     stages {
@@ -55,10 +54,9 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    sh "${tool SONAR_SCANNER}/bin/sonar-scanner \
-                        -Dsonar.projectKey=MyWebApp \
+                    sh "${tool 'SonarScanner'}/bin/sonar-scanner \
+                        -Dsonar.projectKey=$PROJECT_NAME \
                         -Dsonar.sources=. \
-                        -Dsonar.host.url=http://127.0.0.1:54990 \
                         -Dsonar.cs.opencover.reportsPaths=coverage.opencover.xml"
                 }
             }
