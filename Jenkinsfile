@@ -8,6 +8,12 @@ pipeline {
         PORT = '82'
     }
 
+    tools {
+        // đảm bảo dotnet được cài (nếu bạn dùng Jenkins global tool config)
+        // hoặc cài thủ công tại agent
+        dotnet 'dotnet-sdk' 
+    }
+
     stages {
         stage('Cleanup') {
             steps {
@@ -24,6 +30,20 @@ pipeline {
         stage('Restore') {
             steps {
                 bat 'dotnet restore MyWebApp.csproj'
+            }
+        }
+
+        stage('SonarQube Analysis Begin') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    bat """
+                        dotnet tool install --global dotnet-sonarscanner
+                        set PATH=%PATH%;%USERPROFILE%\\.dotnet\\tools
+                        dotnet sonarscanner begin ^
+                          /k:"MyWebApp" ^
+                          /d:sonar.login=%sqtoken%
+                    """
+                }
             }
         }
 
@@ -48,6 +68,17 @@ pipeline {
                         exit /b 1
                     )
                 '''
+            }
+        }
+
+        stage('SonarQube Analysis End') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    bat """
+                        set PATH=%PATH%;%USERPROFILE%\\.dotnet\\tools
+                        dotnet sonarscanner end /d:sonar.login=%sqtoken%
+                    """
+                }
             }
         }
 
