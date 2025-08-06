@@ -53,11 +53,8 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    sh "${tool 'SonarScanner'}/bin/sonar-scanner \
-                        -Dsonar.projectKey=$PROJECT_NAME \
-                        -Dsonar.sources=. \
-                        -Dsonar.cs.opencover.reportsPaths=coverage.opencover.xml"
+                withSonarQubeEnv("${ONARQUBE_SERVER}") {
+                    bat "${tool SONAR_SCANNER}\\bin\\sonar-scanner.bat -Dsonar.projectKey=MyWebApp -Dsonar.sources=. -Dsonar.cs.opencover.reportsPaths=coverage.opencover.xml"
                 }
             }
         }
