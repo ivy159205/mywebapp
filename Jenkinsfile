@@ -8,7 +8,7 @@ pipeline {
         PORT = '82'
 
         SONARQUBE_SERVER = 'MySonar'
-        SONAR_SCANNER = "C:\\ProgramData\\Jenkins\\.jenkins\\tools\\hudson.plugins.sonar.SonarRunnerInstallation\\SonarScanner\\bin\\sonar-scanner.bat"
+        SONAR_SCANNER = 'C:\\ProgramData\\Jenkins\\.jenkins\\tools\\hudson.plugins.sonar.SonarRunnerInstallation\\SonarScanner\\bin\\sonar-scanner.bat'
     }
 
     stages {
