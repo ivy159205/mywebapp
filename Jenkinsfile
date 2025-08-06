@@ -8,7 +8,7 @@ pipeline {
         PORT = '82'
 
         SONARQUBE_SERVER = 'MySonar'
-        SONAR_SCANNER_PATH = 'C:\\ProgramData\\Jenkins\\.jenkins\\tools\\hudson.plugins.sonar.SonarRunnerInstallation\\SonarScanner\\bin\\sonar-scanner.bat'
+        SONAR_SCANNER = "C:\\ProgramData\\Jenkins\\.jenkins\\tools\\hudson.plugins.sonar.SonarRunnerInstallation\\SonarScanner\\bin\\sonar-scanner.bat"
     }
 
     stages {
@@ -54,8 +54,8 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    bat "${env.SONAR_SCANNER_PATH} -Dsonar.projectKey=MyWebApp -Dsonar.sources=."
+                withSonarQubeEnv('MySonar') {
+                    bat "\"${env.SONAR_SCANNER}\" -Dsonar.projectKey=MyWebApp -Dsonar.sources=."
                 }
             }
         }
