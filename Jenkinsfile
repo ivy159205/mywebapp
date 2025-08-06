@@ -6,6 +6,9 @@ pipeline {
         DOCKER_IMAGE = 'mywebapp:latest'
         CONTAINER_NAME = 'MyWebApp-container'
         PORT = '82'
+
+        ONARQUBE_SERVER = 'MySonar'
+        SONAR_SCANNER = 'SonarScanner'
     }
 
     stages {
@@ -48,6 +51,27 @@ pipeline {
                 '''
             }
         }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv("${SONARQUBE_SERVER}") {
+                    sh "${tool SONAR_SCANNER}/bin/sonar-scanner \
+                        -Dsonar.projectKey=MyWebApp \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=http://127.0.0.1:54990 \
+                        -Dsonar.cs.opencover.reportsPaths=coverage.opencover.xml"
+                }
+            }
+        }
+
+        stage("Wait for Quality Gate") {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+    }
     }
 
     post {
