@@ -7,7 +7,7 @@ pipeline {
         CONTAINER_NAME = 'MyWebApp-container'
         PORT = '82'
 
-        ONARQUBE_SERVER = 'MySonar'
+        SONARQUBE_SERVER = 'MySonar'
         SONAR_SCANNER = 'SonarScanner'
     }
 
