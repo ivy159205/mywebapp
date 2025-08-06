@@ -8,12 +8,6 @@ pipeline {
         PORT = '82'
     }
 
-    tools {
-        // đảm bảo dotnet được cài (nếu bạn dùng Jenkins global tool config)
-        // hoặc cài thủ công tại agent
-        dotnet 'dotnet-sdk' 
-    }
-
     stages {
         stage('Cleanup') {
             steps {
